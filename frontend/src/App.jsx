@@ -1,13 +1,11 @@
 import { NavLink, Route, Routes } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import EquipmentDetail from "./pages/EquipmentDetail";
-import Upload from "./pages/Upload";
 import ReviewQueue from "./pages/ReviewQueue";
 import Notifications from "./pages/Notifications";
 
 const NAV = [
   { to: "/", label: "Dashboard", end: true },
-  { to: "/upload", label: "Upload" },
   { to: "/review", label: "Review Queue" },
   { to: "/notifications", label: "Alerts" },
 ];
@@ -50,7 +48,6 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/equipment/:id" element={<EquipmentDetail />} />
-          <Route path="/upload" element={<Upload />} />
           <Route path="/review" element={<ReviewQueue />} />
           <Route path="/notifications" element={<Notifications />} />
         </Routes>

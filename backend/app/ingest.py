@@ -40,6 +40,7 @@ def ingest_pdf(
     filename: str,
     pdf_bytes: bytes,
     file_path: Optional[str] = None,
+    source_id: Optional[str] = None,
     ref_date: Optional[date] = None,
 ) -> dict:
     """Full pipeline: extract -> persist -> recompute status -> notify.
@@ -49,6 +50,7 @@ def ingest_pdf(
 
     doc = Document(
         filename=filename,
+        source_id=source_id,
         doc_type=result.doc_type,
         file_path=file_path,
         extraction_confidence=result.confidence,

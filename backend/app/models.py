@@ -80,6 +80,9 @@ class Document(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     filename: Mapped[str] = mapped_column(String, nullable=False)
+    # Stable identity of the source this doc was ingested from (OneDrive item
+    # id+etag, or local path+mtime). Used to skip already-ingested files.
+    source_id: Mapped[str | None] = mapped_column(String, index=True)
     doc_type: Mapped[str] = mapped_column(
         String, default="unknown", nullable=False
     )  # purchase_order/rental_contract/service_record/return_record/spec_sheet/unknown

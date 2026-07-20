@@ -5,6 +5,12 @@
 *.db
 poc.db
 
+# Runtime ingestion dirs
+uploads/
+# Keep the inbox folder in the repo, but ignore any PDFs dropped into it.
+inbox/*
+!inbox/.gitkeep
+
 # Python
 __pycache__/
 *.py[cod]

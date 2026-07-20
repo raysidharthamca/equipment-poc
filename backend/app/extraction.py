@@ -23,9 +23,9 @@ from pydantic import BaseModel, ValidationError
 from app.config import settings
 from app.schemas import EXTRACTION_SCHEMAS, Classification
 
-# Extraction is a high-volume, latency-sensitive classification task -> Sonnet.
-# (The workflow named claude-sonnet-4-6; claude-sonnet-5 is the current tier.)
-MODEL = "claude-sonnet-5"
+# Extraction is a high-volume, latency-sensitive classification task, so the
+# model defaults to Haiku 4.5 (fast + cheap). Configurable via ANTHROPIC_MODEL.
+MODEL = settings.ANTHROPIC_MODEL
 CONFIDENCE_REVIEW_THRESHOLD = 0.8
 
 ALLOWED_DOC_TYPES = list(EXTRACTION_SCHEMAS.keys()) + ["unknown"]

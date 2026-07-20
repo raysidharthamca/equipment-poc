@@ -29,7 +29,8 @@ from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app import notify, status
+from app import notify, source, status
+from app.config import settings
 from app.database import SessionLocal, get_db, init_db
 from app.ingest import ingest_pdf
 from app.models import Document, Equipment, Notification, ServiceRecord, Transaction
@@ -64,6 +65,20 @@ def _daily_recompute() -> None:
         db.close()
 
 
+def _poll_source() -> None:
+    """Scheduled ingestion: pull any new PDFs from the configured source
+    (OneDrive folder / local inbox) and run them through the pipeline."""
+    db = SessionLocal()
+    try:
+        summary = source.scan_and_ingest(db)
+        if summary["ingested"] or summary["errors"]:
+            print(f"[ingest] {summary}")
+    except Exception as e:
+        print(f"[ingest] source scan failed: {e}")
+    finally:
+        db.close()
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     global scheduler
@@ -71,6 +86,11 @@ async def lifespan(app: FastAPI):
     init_db()
     scheduler = BackgroundScheduler(daemon=True)
     scheduler.add_job(_daily_recompute, "interval", hours=24, id="daily_recompute")
+    if settings.INGEST_POLL_MINUTES > 0:
+        scheduler.add_job(
+            _poll_source, "interval", minutes=settings.INGEST_POLL_MINUTES,
+            id="poll_source", next_run_time=None,
+        )
     scheduler.start()
     yield
     if scheduler:
@@ -318,3 +338,10 @@ class RecomputeBody(BaseModel):
 def admin_recompute(body: RecomputeBody = RecomputeBody(), db: Session = Depends(get_db)):
     changes = recompute_and_notify(db, body.ref_date)
     return {"changed": changes}
+
+
+@app.post("/admin/ingest-now")
+def admin_ingest_now(db: Session = Depends(get_db)):
+    """Scan the configured source (OneDrive folder / local inbox) on demand and
+    ingest any new PDFs. Idempotent — already-seen files are skipped."""
+    return source.scan_and_ingest(db)

@@ -9,7 +9,7 @@ from __future__ import annotations
 from datetime import date, datetime
 from typing import Literal, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 # Allowed document types (mirror models.Document.doc_type vocabulary).
 DocType = Literal[
@@ -112,8 +112,7 @@ class EquipmentOut(BaseModel):
     current_state: str
     notes: Optional[str] = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class DocumentOut(BaseModel):
@@ -125,8 +124,7 @@ class DocumentOut(BaseModel):
     extraction_confidence: Optional[float] = None
     needs_review: bool
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class TransactionOut(BaseModel):
@@ -140,8 +138,7 @@ class TransactionOut(BaseModel):
     amount: Optional[float] = None
     currency: Optional[str] = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class ServiceRecordOut(BaseModel):
@@ -154,8 +151,7 @@ class ServiceRecordOut(BaseModel):
     next_due_date: Optional[date] = None
     findings: Optional[str] = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class NotificationOut(BaseModel):
@@ -166,5 +162,4 @@ class NotificationOut(BaseModel):
     sent_at: datetime
     level: str
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)

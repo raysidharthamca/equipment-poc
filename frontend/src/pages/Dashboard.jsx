@@ -130,7 +130,8 @@ export default function Dashboard() {
       </div>
       {filtered.length === 0 && (
         <div className="rounded-lg bg-white p-8 text-center text-slate-400">
-          No equipment. Seed the database or upload a document.
+          No equipment yet. Drop PDFs in the ingestion folder (or run a source
+          scan) and they'll appear here.
         </div>
       )}
     </div>
